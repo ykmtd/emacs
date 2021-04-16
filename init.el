@@ -234,6 +234,11 @@
                                     symbol-overlay-face-16))
   :bind (("C-c m" . symbol-overlay-put)))
 
-
+;; undo-tree
+(leaf undo-tree
+  :ensure t
+  :blackout t
+  :global-minor-mode t
+  :bind ("M-/" . undo-tree-visualize))
 
 (provide 'init)
