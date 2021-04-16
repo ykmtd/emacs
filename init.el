@@ -87,7 +87,6 @@
   :hook
   ((emacs-startup-hook . recentf-mode)))
 
-
 ;; hooks
 (leaf cus-hooks
   :hook (before-save-hook . delete-trailing-whitespace))
@@ -111,11 +110,32 @@
   ((nlinum-format . "%3d ")
    (global-nlinum-mode . t)))
 
-
 ;; auto-sudoedit
 (leaf auto-sudoedit
   :ensure t
   :custom
   (auto-sudoedit-mode . 1))
+
+;; ivy
+(leaf ivy
+  :emacs>= 24.5
+  :ensure t
+  :blackout t
+  :leaf-defer nil
+  :global-minor-mode t
+  :config
+  (leaf swiper
+    :emacs>= 24.5
+    :ensure t
+    :bind (("M-i" . swiper)))
+
+  (leaf counsel
+    :req "emacs-24.5" "swiper-0.13.0"
+    :emacs>= 24.5
+    :ensure t
+    :blackout t
+    :bind (("C-c i" . counsel-imenu)
+           ("C-x C-r" . counsel-recentf))
+    :global-minor-mode t))
 
 (provide 'init)
