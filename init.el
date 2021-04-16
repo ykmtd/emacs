@@ -174,4 +174,10 @@
   :bind (("C-c r" . anzu-query-replace)
          ("C-c R" . anzu-query-replace-regexp)))
 
+;; tramp
+(leaf tramp
+  :require t
+  :custom ((password-cache-expiry . nil)
+           (tramp-copy-size-limit . nil)))
+
 (provide 'init)
