@@ -180,4 +180,13 @@
   :custom ((password-cache-expiry . nil)
            (tramp-copy-size-limit . nil)))
 
+;; sequential-command
+(leaf sequential-command
+  :ensure t
+  :config
+  (leaf sequential-command-config
+	:hook (emacs-startup-hook . sequential-command-setup-keys)))
+  (bind-key "C-a" 'seq-home)
+  (bind-key "C-e" 'seq-end)
+
 (provide 'init)
