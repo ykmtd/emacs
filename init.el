@@ -241,4 +241,19 @@
   :global-minor-mode t
   :bind ("M-/" . undo-tree-visualize))
 
+;; selected
+(leaf selected
+  :ensure t
+  :blackout t
+  :config
+  (leaf expand-region :ensure t)
+  :custom
+  (selected-global-mode . t)
+  :bind (selected-keymap
+         ("e" . er/expand-region)
+         ("E" . er/contract-region)
+         ("u" . upcase-region)
+         ("d" . downcase-region)
+         ("w" . count-words-region)))
+
 (provide 'init)
