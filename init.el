@@ -98,12 +98,6 @@
   :tag "builtin" "faces" "help"
   :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
 
-;; run server
-(leaf server
-      :require t
-      :defun server-running-p
-      :config (unless (server-running-p) (server-start)))
-
 ;; bind-key
 (leaf bind-key
   :ensure t
