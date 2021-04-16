@@ -116,26 +116,37 @@
   :custom
   (auto-sudoedit-mode . 1))
 
-;; ivy
-(leaf ivy
+;; selectrum
+(leaf selectrum
   :emacs>= 24.5
   :ensure t
   :blackout t
   :leaf-defer nil
   :global-minor-mode t
   :config
-  (leaf swiper
-    :emacs>= 24.5
-    :ensure t
-    :bind (("M-i" . swiper)))
-
-  (leaf counsel
-    :req "emacs-24.5" "swiper-0.13.0"
-    :emacs>= 24.5
+  (leaf selectrum-prescient
     :ensure t
     :blackout t
-    :bind (("C-c i" . counsel-imenu)
-           ("C-x C-r" . counsel-recentf))
-    :global-minor-mode t))
+    :custom (selectrum-prescient-mode . +1)))
+
+;; prescient
+(leaf prescient
+  :ensure t
+  :blackout t
+  :custom (prescient-persist-mode . +1))
+
+;; consult
+(leaf consult
+  :ensure t
+  :bind (("C-x C-r" . consult-recent-file)
+         ("M-i" . consult-line)
+         ("M-y" . consult-yank)
+         ("C-x b" . consult-buffer)
+         ("C-x i" . consult-imenu)
+         ("C-x g" . consult-grep)
+         ("C-x G" . consult-grep)
+         ("C-c m" . consult-mark)
+         ("C-c M" . consult-global-mark)
+         ("C-s" . consult-isearch)))
 
 (provide 'init)
