@@ -163,4 +163,13 @@
 ;; xclip
 (leaf xclip :ensure t :global-minor-mode t)
 
+;; anzu
+(leaf anzu
+  :ensure t
+  :global-minor-mode t
+  :custom ((anzu-search-threshold . 1000)
+           (anzu-minimum-input-length . 3))
+  :bind (("C-c r" . anzu-query-replace)
+         ("C-c R" . anzu-query-replace-regexp)))
+
 (provide 'init)
