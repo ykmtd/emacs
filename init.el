@@ -149,4 +149,15 @@
          ("C-c M" . consult-global-mark)
          ("C-s" . consult-isearch)))
 
+;; highlighting
+(leaf highlighting
+  :config
+  (leaf auto-highlight-symbol
+    :ensure t
+    :global-minor-mode t
+    :custom (set-idle-interval . 0.8))
+  (leaf volatile-highlights
+    :ensure t
+    :global-minor-mode t))
+
 (provide 'init)
