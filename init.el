@@ -39,7 +39,6 @@
 (leaf view
   :custom
   ((menu-bar-mode . nil)
-   (tool-bar-mode . nil)
    (scroll-bar-mode . nil)
    (indent-tabs-mode . nil)
    (ring-bell-function . 'ignore)))
@@ -82,10 +81,11 @@
   (leaf recentf-ext :ensure t)
   :custom
   ((recentf-max-saved-items . 10000)
-   (recentf-exclude . '(".recentf"))
-   (recentf-auto-save-timer . (run-with-idle-timer 30 t 'recentf-save-list)))
+   (recentf-exclude . '(".recentf")))
+  :config
+  (run-with-idle-timer 30 t 'recentf-save-list)
   :hook
-  ((emacs-startup-hook . recentf-mode))
+  ((emacs-startup-hook . recentf-mode)))
 
 
 ;; hooks
@@ -118,14 +118,10 @@
    (global-nlinum-mode . t)))
 
 
-;; whitespace
-(leaf whitespace
-  (leaf cl :require t)
-
 ;; auto-sudoedit
 (leaf auto-sudoedit
   :ensure t
-  :config
-  (auto-sudoedit-mode 1))
+  :custom
+  (auto-sudoedit-mode . 1))
 
 (provide 'init)
