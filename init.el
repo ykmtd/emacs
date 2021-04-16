@@ -160,4 +160,7 @@
     :ensure t
     :global-minor-mode t))
 
+;; xclip
+(leaf xclip :ensure t :global-minor-mode t)
+
 (provide 'init)
