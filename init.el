@@ -152,6 +152,8 @@
 ;; highlighting
 (leaf highlighting
   :config
+  (leaf show-paren
+    :global-minor-mode t)
   (leaf auto-highlight-symbol
     :ensure t
     :global-minor-mode t
