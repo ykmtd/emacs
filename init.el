@@ -256,4 +256,29 @@
          ("d" . downcase-region)
          ("w" . count-words-region)))
 
+(leaf quickrun
+  :ensure t
+  :blackout t
+  :config
+  (quickrun-add-command "c++17"
+                        '((:command . "g++")
+                          (:exec . ("%c -o %e %s -std=c++17"
+                                    "%e"))
+                          (:remove . "%e")
+                          (:description . "Compile C++ file with 'gcc -std=c++11' and execute"))
+                        :default "c++")
+  (when (executable-find "iverilog")
+    (quickrun-add-command "iverilog"
+                          '((:command . "iverilog")
+                            (:exec . ("%c -o %e %s"
+                                      "%e"))
+                            (:remove . "%e")
+                            (:description . "Compile Verilog file with iverilog and execute"))
+                          :mode 'verilog-mode))
+  (quickrun-add-command "python"
+    '((:command . "python3"))
+    :override t)
+  :bind (("C-\\" . quickrun))
+  )
+
 (provide 'init)
