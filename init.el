@@ -194,28 +194,36 @@
   :config
   (defface symbol-overlay-face-9
     '((t (:background "chocolate" :foreground "black")))
-    "Symbol Overlay custom candidate 9")
+    "Symbol Overlay custom candidate 9"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-10
     '((t (:background "sky blue" :foreground "black")))
-    "Symbol Overlay custom candidate 10")
+    "Symbol Overlay custom candidate 10"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-11
     '((t (:background "yellow green" :foreground "black")))
-    "Symbol Overlay custom candidate 11")
+    "Symbol Overlay custom candidate 11"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-12
     '((t (:background "magenta" :foreground "black")))
-    "Symbol Overlay custom candidate 12")
+    "Symbol Overlay custom candidate 12"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-13
     '((t (:background "aquamarine" :foreground "black")))
-    "Symbol Overlay custom candidate 13")
+    "Symbol Overlay custom candidate 13"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-14
     '((t (:background "burly wood" :foreground "black")))
-    "Symbol Overlay custom candidate 14")
+    "Symbol Overlay custom candidate 14"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-15
     '((t (:background "sandy brown" :foreground "black")))
-    "Symbol Overlay custom candidate 15")
+    "Symbol Overlay custom candidate 15"
+    :group 'symbol-overlay)
   (defface symbol-overlay-face-16
     '((t (:background "deep sky blue" :foreground "black")))
-    "Symbol Overlay custom candidate 16")
+    "Symbol Overlay custom candidate 16"
+    :group 'symbol-overlay)
   :custom (symbol-overlay-faces . '(symbol-overlay-face-1
                                     symbol-overlay-face-2
                                     symbol-overlay-face-3
