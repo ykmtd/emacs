@@ -100,8 +100,8 @@
 ;; bind-key
 (leaf bind-key
   :ensure t
-  :config
-  (bind-key* "C-h" 'delete-backward-char))
+  :require t
+  :bind* ("C-h" . delete-backward-char))
 
 ;; nlinum-mode
 (leaf nlinum
