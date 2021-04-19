@@ -327,8 +327,6 @@
   (leaf which-key
     :ensure t
     :global-minor-mode which-key-mode)
-  (leaf company-lsp
-    :ensure t)
   :custom
   ((lsp-print-io . nil)
    (lsp-log-io . nil)
