@@ -49,7 +49,9 @@
   ((tab-width . 4)
    (indent-tabs-mode . nil)
    (truncate-lines . nil)
-   (completion-ignore-case . t)))
+   (completion-ignore-case . t)
+   (electric-pair-mode . t)
+   (electric-indent-mode . t)))
 
 ;; backup settings
 (leaf backup
@@ -338,8 +340,6 @@
 
 (leaf c-config
   :config
-  (electric-pair-mode t)
-  (electric-indent-mode t)
   (c-set-offset 'innamespace 0)
   (c-set-offset 'inextern-lang 0)
   :custom
