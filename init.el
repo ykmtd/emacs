@@ -349,5 +349,7 @@
   ((lsp-deferred . c-mode)
    (lsp-deferred . c++-mode)))
 
+(leaf python-config
+  :hook(lsp-deferred . python-mode))
 
 (provide 'init)
