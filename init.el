@@ -281,4 +281,29 @@
   :bind (("C-\\" . quickrun))
   )
 
+(leaf company
+  :ensure t
+  :global-minor-mode global-company-mode
+  :custom-face
+  ((company-tooltip . '((t (:foreground "black" :background "lightgrey"))))
+   (company-tooltip-common . '((t (:foreground "black" :background "lightgrey"))))
+   (company-tooltip-common-selection . '((t (:foreground "white" :background "steelblue"))))
+   (company-tooltip-selection . '((t (:foreground "black" :background "steelblue"))))
+   (company-preview-common . '((t (:foreground nil :background "lightgrey" :underline t))))
+   (company-scrollbar-fg . '((t (:background "orange"))))
+   (company-scrollbar-bg . '((t (:background "gray40")))))
+  :bind ((company-active-map ("C-n" . company-select-next)
+                             ("C-p" . company-select-previous)
+                             ("C-s" . company-filter-candidates)
+                             ("C-i" . company-complete-selection)
+                             ("<tab>" . company-complete-selection)
+                             ("M-d" . company-show-doc-buffer))
+         (company-search-map ("C-n" . company-select-next)
+                             ("C-p" . company-select-previous)))
+  :custom
+  ((company-minimum-prefix-length . 1)
+   (company-selection-wrap-arround . t)
+   (company-idle-delay . 0.4)
+   (company-transformers . '(company-sort-by-occurrence))))
+
 (provide 'init)
