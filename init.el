@@ -321,4 +321,35 @@
   (("M-n" . flycheck-next-error)
    ("M-p" . flycheck-previous-error)))
 
+(leaf lsp-mode
+  :ensure t
+  :config
+  (leaf which-key
+    :ensure t
+    :global-minor-mode which-key-mode)
+  (leaf company-lsp
+    :ensure t)
+  :custom
+  ((lsp-print-io . nil)
+   (lsp-log-io . nil)
+   (gc-cons-threshold . 100000000)
+   (lsp-keymap-prefix . "C-c l"))
+  :global-minor-mode lsp-mode
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration))
+
+(leaf c-config
+  :config
+  (electric-pair-mode t)
+  (electric-indent-mode t)
+  (c-set-offset 'innamespace 0)
+  (c-set-offset 'inextern-lang 0)
+  :custom
+  (c++-basic-offset . 4)
+  (c-basic-offset . 4)
+  :hook
+  ((lsp-deferred . c-mode)
+   (lsp-deferred . c++-mode)))
+
+
 (provide 'init)
