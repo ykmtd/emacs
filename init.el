@@ -314,4 +314,11 @@
    (company-idle-delay . 0.4)
    (company-transformers . '(company-sort-by-occurrence))))
 
+(leaf flycheck
+  :ensure t
+  :global-minor-mode global-flycheck-mode
+  :bind
+  (("M-n" . flycheck-next-error)
+   ("M-p" . flycheck-previous-error)))
+
 (provide 'init)
