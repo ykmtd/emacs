@@ -71,6 +71,16 @@
 (leaf theme
   :config (load-theme 'wombat t))
 
+;; whitespace
+(leaf whitespace
+  :require t
+  :global-minor-mode global-whitespace-mode
+  :custom
+  ((whitespace-style . '(face trailing tabs)))
+  :custom-face
+  ((whitespace-tab . '((t (:foreground "#236fc6" :background unspecified :underline t)))))
+  )
+
 ;; misc-modes
 (leaf misc-modes
   :custom
@@ -186,7 +196,7 @@
   :ensure t
   :config
   (leaf sequential-command-config
-	:hook (emacs-startup-hook . sequential-command-setup-keys)))
+    :hook (emacs-startup-hook . sequential-command-setup-keys)))
   (bind-key "C-a" 'seq-home)
   (bind-key "C-e" 'seq-end)
 
