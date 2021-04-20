@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: guard
+# key: guard
+# --
+#ifndef __${1:`(subst-char-in-string ?. ?_ (upcase (file-name-nondirectory (buffer-file-name))))`}__
+#define __$1__
+
+$0
+
+#endif

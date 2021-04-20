@@ -372,4 +372,9 @@
     :mode "\\.go\\'")
   :hook (lsp-deferred . go-mode))
 
+(leaf yasnippet
+  :ensure t
+  :global-minor-mode yas-global-mode
+  :custom (yas-snippet-dirs . '("~/.emacs.d/snippets")))
+
 (provide 'init)
