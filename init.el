@@ -350,6 +350,16 @@
    (lsp-deferred . c++-mode)))
 
 (leaf python-config
-  :hook(lsp-deferred . python-mode))
+  :hook (lsp-deferred . python-mode))
+
+(leaf verilog-config
+  :hook (lsp-deferred . verilog-mode))
+
+(leaf golang-config
+  :config
+  (leaf go-mode
+    :ensure t
+    :mode "\\.go\\'")
+  :hook (lsp-deferred . go-mode))
 
 (provide 'init)
