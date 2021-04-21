@@ -263,8 +263,7 @@
 (leaf undo-tree
   :ensure t
   :blackout t
-  :global-minor-mode t
-  :bind ("M-/" . undo-tree-visualize))
+  :global-minor-mode global-undo-tree-mode)
 
 ;; selected
 (leaf selected
