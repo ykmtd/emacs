@@ -354,7 +354,7 @@
   (lsp-mode . lsp-enable-which-key-integration))
 
 (leaf c-config
-  :config
+  :init
   (c-set-offset 'innamespace 0)
   (c-set-offset 'inextern-lang 0)
   :custom
@@ -371,7 +371,7 @@
   :hook (lsp-deferred . verilog-mode))
 
 (leaf golang-config
-  :config
+  :init
   (leaf go-mode
     :ensure t
     :mode "\\.go\\'")
