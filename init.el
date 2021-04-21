@@ -102,7 +102,11 @@
 
 ;; hooks
 (leaf cus-hooks
-  :hook (before-save-hook . delete-trailing-whitespace))
+  :init
+  (defvar delete-trailing-whitespace-before-save t)
+  (defun my-delete-trailing-whitespace ()
+    (if delete-trailing-whitespace-before-save (delete-trailing-whitespace)))
+  :hook (before-save-hook . my-delete-trailing-whitespace))
 
 ;; cus-edit
 (leaf cus-edit
@@ -372,6 +376,11 @@
     :ensure t
     :mode "\\.go\\'")
   :hook (lsp-deferred . go-mode))
+
+(leaf markdown-config
+  :hook
+  (markdown-mode-hook . (lambda ()
+                          (set (make-local-variable 'delete-trailing-whitespace-before-save) nil))))
 
 (leaf yasnippet
   :ensure t
