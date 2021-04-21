@@ -348,6 +348,7 @@
   ((lsp-print-io . nil)
    (lsp-log-io . nil)
    (gc-cons-threshold . 100000000)
+   (read-process-output-max . 1048576)
    (lsp-keymap-prefix . "C-c l"))
   :global-minor-mode lsp-mode
   :hook
