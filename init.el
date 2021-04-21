@@ -78,7 +78,8 @@
   :custom
   ((whitespace-style . '(face trailing tabs)))
   :custom-face
-  ((whitespace-tab . '((t (:foreground "#236fc6" :background unspecified :underline t)))))
+  ((whitespace-tab . '((t (:foreground "#236fc6" :background unspecified :underline t))))
+   (whitespace-trailing . '((t (:foreground "orange" :background unspecified :underline t)))))
   )
 
 ;; misc-modes
