@@ -259,6 +259,11 @@
                                     symbol-overlay-face-16))
   :bind (("C-c m" . symbol-overlay-put)))
 
+;; bm
+(leaf bm
+  :ensure t
+  :bind ("M-SPC" . bm-toggle))
+
 ;; undo-tree
 (leaf undo-tree
   :ensure t
