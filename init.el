@@ -406,4 +406,9 @@
   :global-minor-mode yas-global-mode
   :custom (yas-snippet-dirs . '("~/.emacs.d/snippets")))
 
+(leaf smart-jump
+  :ensure t
+  :init
+  (smart-jump-setup-default-registers))
+
 (provide 'init)
