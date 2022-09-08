@@ -380,6 +380,13 @@
   :hook (lsp-deferred . python-mode))
 
 (leaf verilog-config
+  :custom
+  ((verilog-case-indent . 4)
+   (verilog-cexp-indent . 4)
+   (verilog-indent-level . 4)
+   (verilog-indent-level-behavioral . 4)
+   (verilog-indent-level-declaration . 4)
+   (verilog-indent-level-module . 4))
   :hook (lsp-deferred . verilog-mode))
 
 (leaf golang-config
