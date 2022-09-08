@@ -364,14 +364,17 @@
 
 (leaf c-config
   :init
-  (c-set-offset 'innamespace 0)
-  (c-set-offset 'inextern-lang 0)
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (c-set-offset 'innamespace 0)
+              (c-set-offset 'inextern-lang 0)))
   :custom
-  (c++-basic-offset . 4)
-  (c-basic-offset . 4)
+  ((c++-basic-offset . 2)
+   (c-basic-offset . 2))
   :hook
   ((lsp-deferred . c-mode)
-   (lsp-deferred . c++-mode)))
+   (lsp-deferred . c++-mode)
+   (google-set-c-style . c++-mode)))
 
 (leaf python-config
   :hook (lsp-deferred . python-mode))
