@@ -268,6 +268,8 @@
 (leaf undo-tree
   :ensure t
   :blackout t
+  :custom
+  (undo-tree-history-directory-alist . '(("." . "~/.emacs.d/undo")))
   :global-minor-mode global-undo-tree-mode)
 
 ;; selected
