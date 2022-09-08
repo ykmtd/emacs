@@ -157,7 +157,7 @@
   :ensure t
   :bind (("C-x C-r" . consult-recent-file)
          ("M-i" . consult-line)
-         ("M-y" . consult-yank)
+         ("M-y" . consult-yank-pop)
          ("C-x b" . consult-buffer)
          ("C-x i" . consult-imenu)
          ("C-x g" . consult-grep)
