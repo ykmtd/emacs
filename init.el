@@ -162,8 +162,7 @@
          ("C-x i" . consult-imenu)
          ("C-x g" . consult-grep)
          ("C-x G" . consult-grep)
-         ("C-c M" . consult-global-mark)
-         ("C-s" . consult-isearch)))
+         ("C-c M" . consult-global-mark)))
 
 ;; highlighting
 (leaf highlighting
