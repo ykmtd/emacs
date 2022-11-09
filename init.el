@@ -133,24 +133,24 @@
   :custom
   (auto-sudoedit-mode . 1))
 
-;; selectrum
-(leaf selectrum
+;; orderless
+(leaf orderless
+  :ensure t
+  :init
+  (icomplete-mode)
+  :custom
+  ((completion-styles . '(orderless basic))
+   (completion-category-overrides . '((file (styles basic substring partial-completion flex))))))
+
+;; vertico
+(leaf vertico
   :emacs>= 24.5
   :ensure t
   :blackout t
   :leaf-defer nil
   :global-minor-mode t
-  :config
-  (leaf selectrum-prescient
-    :ensure t
-    :blackout t
-    :custom (selectrum-prescient-mode . +1)))
-
-;; prescient
-(leaf prescient
-  :ensure t
-  :blackout t
-  :custom (prescient-persist-mode . +1))
+  :custom
+  (vertico-cycle . t))
 
 ;; consult
 (leaf consult
