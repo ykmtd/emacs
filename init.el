@@ -357,7 +357,8 @@
    (lsp-log-io . nil)
    (gc-cons-threshold . 100000000)
    (read-process-output-max . 1048576)
-   (lsp-keymap-prefix . "C-c l"))
+   (lsp-keymap-prefix . "C-c l")
+   (lsp-enable-on-type-formatting . nil))
   :global-minor-mode lsp-mode
   :hook
   (lsp-mode . lsp-enable-which-key-integration))
