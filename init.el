@@ -371,4 +371,18 @@
   :custom
   (yas-snippet-dirs '("~/.emacs.d/snippets")))
 
+;; -----------------------------------------------------------------------------
+;; LLM
+;; -----------------------------------------------------------------------------
+;; (use-package gptel
+;;   :ensure t
+;;   :config
+;;   (load "~/.emacs.d/secrets.el")
+;;   (setq gptel-backend (gptel-make-ollama "Ollama"
+;;                                      :host "localhost:11434"
+;;                                      :stream t
+;;                                      :models '(llama3.2)))
+;;   :custom
+;;   ((gptel-model 'llama3.2)))
+
 (provide 'init)
