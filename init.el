@@ -9,9 +9,8 @@
 ;; <leaf-install-code>
 (eval-and-compile
   (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
+   'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+                       ("melpa" . "https://melpa.org/packages/")))
   (package-initialize)
   (unless (package-installed-p 'leaf)
     (package-refresh-contents)
@@ -410,5 +409,15 @@
   :ensure t
   :init
   (smart-jump-setup-default-registers))
+
+(leaf aidermacs
+  :ensure t
+  :bind
+  (("C-c C-a" . aidermacs-transient-menu))
+  :config
+  (setenv "OLLAMA_API_BASE" "http://127.0.0.1/11434")
+  :custom
+  (aidermacs-default-model . "ollama/llama3.2")
+  )
 
 (provide 'init)
