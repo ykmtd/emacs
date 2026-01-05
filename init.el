@@ -364,40 +364,6 @@
 (use-package meson-mode :ensure t)
 (use-package markdown-mode :ensure t)
 
-;; modern highlighting with tree-sitter
-(use-package treesit
-  :if (and (fboundp 'treesit-available-p) (treesit-available-p))
-  :custom
-  (treesit-language-source-alist
-   '((c "https://github.com/tree-sitter/tree-sitter-c")
-     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (verilog "https://github.com/tree-sitter/tree-sitter-verilog")
-     (bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
-     (dockerfile "https://github.com/tree-sitter/tree-sitter-dockerfile")
-     (elisp "https://github.com/tree-sitter/tree-sitter-elisp")
-     (editorconfig "https://github.com/tree-sitter/tree-sitter-editorconfig")
-     (fortran "https://github.com/tree-sitter/tree-sitter-fortran")
-     (gitignore "https://github.com/tree-sitter/tree-sitter-gitignore")
-     (gitattributes "https://github.com/tree-sitter/tree-sitter-gitattributes")
-     (llvm "https://github.com/tree-sitter/tree-sitter-llvm")
-     (llvm-mir "https://github.com/tree-sitter/tree-sitter-llvm-mir")
-     (markdown "https://github.com/tree-sitter/tree-sitter-markdown")
-     (markdown-inline "https://github.com/tree-sitter/tree-sitter-markdown-inline")
-     (mermaid "https://github.com/tree-sitter/tree-sitter-mermaid")
-     (meson "https://github.com/tree-sitter/tree-sitter-meson")
-     (tcl "https://github.com/tree-sitter/tree-sitter-tcl")
-     (yaml "https://github.com/tree-sitter/tree-sitter-yaml")
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     ))
-  :config
-  ;; 既存のメジャーモード (c++-modeなど) を tree-sitter 版 (c++-ts-mode) にマッピング
-  (let ((map treesit-language-source-alist))
-    ;; 必要に応じてマッピングを追加・調整
-    (setq major-mode-remap-alist
-          (mapcar (lambda (x) (cons (car x) (cdr x))) map))))
-
 ;; yasnippet
 (use-package yasnippet
   :ensure t
