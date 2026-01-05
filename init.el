@@ -1,301 +1,310 @@
+;;; init.el --- Emacs configuration with use-package  -*- lexical-binding: t; -*-
+;;; Code
 
-;; For debug as `emacs -q -l <this_file>'
-(eval-and-compile
-  (when (or load-file-name byte-compile-current-file)
-    (setq user-emacs-directory
-          (expand-file-name
-           (file-name-directory (or load-file-name byte-compile-current-file))))))
+;; -----------------------------------------------------------------------------
+;; Bootstrap configuration
+;; -----------------------------------------------------------------------------
 
-;; <leaf-install-code>
+;; initialize use-package
 (eval-and-compile
   (customize-set-variable
-   'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+   'package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                       ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                        ("melpa" . "https://melpa.org/packages/")))
-  (package-initialize)
-  (unless (package-installed-p 'leaf)
-    (package-refresh-contents)
-    (package-install 'leaf))
+  (package-initialize))
 
-  (leaf leaf-keywords
-    :ensure t
-    :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
-    (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
-
-    :config
-    ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
-
-;; leaf
-(leaf leaf-tree
-  :ensure t
-  :custom (imenu-list-position . 'left))
-(leaf leaf-convert :ensure t)
-
-;; view settings
-(leaf view
-  :custom
-  ((menu-bar-mode . nil)
-   (scroll-bar-mode . nil)
-   (indent-tabs-mode . nil)
-   (ring-bell-function . 'ignore)))
-
-;; editor settings
-(leaf editor
-  :custom
-  ((tab-width . 4)
-   (indent-tabs-mode . nil)
-   (truncate-lines . nil)
-   (completion-ignore-case . t)
-   (electric-pair-mode . t)
-   (electric-indent-mode . t)))
-
-;; backup settings
-(leaf backup
-  :custom
-  ((make-backup-files . nil)
-   (auto-save-default . nil)))
-
-;; startup settings
-(leaf startup
-  :custom
-  ((inhibit-startup-screen . t)
-   (inhibit-startup-message . t)
-   (inhibit-startup-echo-area-message . t)
-   (inhibit-scratch-message . nil)))
-
-;; theme
-(leaf theme
-  :config (load-theme 'wombat t))
-
-;; whitespace
-(leaf whitespace
-  :require t
-  :global-minor-mode global-whitespace-mode
-  :custom
-  ((whitespace-style . '(face trailing tabs)))
-  :custom-face
-  ((whitespace-tab . '((t (:foreground "#236fc6" :background unspecified :underline t))))
-   (whitespace-trailing . '((t (:foreground "orange" :background unspecified :underline t)))))
-  )
-
-;; misc-modes
-(leaf misc-modes
-  :custom
-  ((global-auto-revert-mode . 1)))
-
-;; recentf
-(leaf recentf
-  :require t
+;; -----------------------------------------------------------------------------
+;; Basic Emacs Settings (Built-in)
+;; -----------------------------------------------------------------------------
+(use-package emacs
   :init
-  (leaf recentf-ext :ensure t)
-  :custom
-  ((recentf-max-saved-items . 10000)
-   (recentf-exclude . '(".recentf")))
+  ;; custom-file path
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+
+  ;; view settings
+  (setq menu-bar-mode nil
+        indent-tabs-mode nil
+        ring-bell-function 'ignore
+        show-paren-mode t)
+
+  ;; editor settings
+  (setq tab-width 4
+        truncate-lines nil
+        completion-ignore-case t)
+  (electric-pair-mode 1)
+  (electric-indent-mode 1)
+  (global-auto-revert-mode 1)
+
+  ;; backup settings
+  (setq make-backup-files nil
+        auto-save-default nil)
+
+  ;; startup settings
+  (setq inhibit-startup-screen t
+        inhibit-startup-message t
+        inhibit-startup-echo-area-message t)
+
+  (global-display-line-numbers-mode t)
+  (custom-set-variables '(display-line-numbers-width-start t))
+
   :config
-  (run-with-idle-timer 30 t 'recentf-save-list)
-  :hook
-  ((emacs-startup-hook . recentf-mode)))
-
-;; hooks
-(leaf cus-hooks
-  :init
-  (defvar delete-trailing-whitespace-before-save t)
-  (defun my-delete-trailing-whitespace ()
-    (if delete-trailing-whitespace-before-save (delete-trailing-whitespace)))
-  :hook (before-save-hook . my-delete-trailing-whitespace))
-
-;; cus-edit
-(leaf cus-edit
-  :doc "tools for customizing Emacs and Lisp packages"
-  :tag "builtin" "faces" "help"
-  :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
-
-;; bind-key
-(leaf bind-key
-  :ensure t
-  :require t
+  ;; theme
+  (load-theme 'wombat t)
+  ;; custom-file のロード (存在すれば)
+  (when (file-exists-p custom-file)
+    (load custom-file))
   :bind* ("C-h" . delete-backward-char))
 
-;; nlinum-mode
-(leaf nlinum
+(use-package diminish
+  :ensure t)
+
+;; -----------------------------------------------------------------------------
+;; Visual & UI
+;; -----------------------------------------------------------------------------
+
+;; whitespace
+(use-package whitespace
   :ensure t
+  :hook (emacs-startup . global-whitespace-mode)
   :custom
-  ((nlinum-format . "%3d ")
-   (global-nlinum-mode . t)))
+  (whitespace-style '(face trailing tabs))
+  :custom-face
+  (whitespace-tab ((t (:foreground "#236fc6" :background unspecified :underline t))))
+  (whitespace-trailing ((t (:foreground "orange" :background unspecified :underline t)))))
 
-;; auto-sudoedit
-(leaf auto-sudoedit
+(use-package auto-highlight-symbol
   :ensure t
-  :custom
-  (auto-sudoedit-mode . 1))
+  :hook (after-init . global-auto-highlight-symbol-mode)
+  :custom (ahs-idle-interval 0.8))
 
-;; orderless
-(leaf orderless
+(use-package volatile-highlights
   :ensure t
-  :init
-  (icomplete-mode)
-  :custom
-  ((completion-styles . '(orderless basic))
-   (completion-category-overrides . '((file (styles basic substring partial-completion flex))))))
-
-;; vertico
-(leaf vertico
-  :emacs>= 24.5
-  :ensure t
-  :blackout t
-  :leaf-defer nil
-  :global-minor-mode t
-  :custom
-  (vertico-cycle . t))
-
-;; consult
-(leaf consult
-  :ensure t
-  :bind (("C-x C-r" . consult-recent-file)
-         ("M-i" . consult-line)
-         ("M-y" . consult-yank-pop)
-         ("C-x b" . consult-buffer)
-         ("C-x i" . consult-imenu)
-         ("C-x g" . consult-grep)
-         ("C-x G" . consult-grep)
-         ("C-c M" . consult-global-mark)))
-
-;; highlighting
-(leaf highlighting
-  :config
-  (leaf show-paren
-    :global-minor-mode t)
-  (leaf auto-highlight-symbol
-    :ensure t
-    :global-minor-mode t
-    :custom (set-idle-interval . 0.8))
-  (leaf volatile-highlights
-    :ensure t
-    :global-minor-mode t))
-
-;; xclip
-(leaf xclip :ensure t :global-minor-mode t)
+  :hook (after-init . volatile-highlights-mode))
 
 ;; anzu
-(leaf anzu
+(use-package anzu
   :ensure t
-  :global-minor-mode t
-  :custom ((anzu-search-threshold . 1000)
-           (anzu-minimum-input-length . 3))
+  :hook (after-init . global-anzu-mode)
+  :custom
+  (anzu-search-threshold 1000)
+  (anzu-minimum-input-length 3)
   :bind (("C-c r" . anzu-query-replace)
          ("C-c R" . anzu-query-replace-regexp)))
 
-;; tramp
-(leaf tramp
-  :require t
-  :custom ((password-cache-expiry . nil)
-           (tramp-copy-size-limit . nil)))
-
-;; sequential-command
-(leaf sequential-command
-  :ensure t
-  :config
-  (leaf sequential-command-config
-    :hook (emacs-startup-hook . sequential-command-setup-keys)))
-  (bind-key "C-a" 'seq-home)
-  (bind-key "C-e" 'seq-end)
-
 ;; symbol-overlay
-(leaf symbol-overlay
+(use-package symbol-overlay
   :ensure t
-  :config
-  (defface symbol-overlay-face-9
-    '((t (:background "chocolate" :foreground "black")))
-    "Symbol Overlay custom candidate 9"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-10
-    '((t (:background "sky blue" :foreground "black")))
-    "Symbol Overlay custom candidate 10"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-11
-    '((t (:background "yellow green" :foreground "black")))
-    "Symbol Overlay custom candidate 11"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-12
-    '((t (:background "magenta" :foreground "black")))
-    "Symbol Overlay custom candidate 12"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-13
-    '((t (:background "aquamarine" :foreground "black")))
-    "Symbol Overlay custom candidate 13"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-14
-    '((t (:background "burly wood" :foreground "black")))
-    "Symbol Overlay custom candidate 14"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-15
-    '((t (:background "sandy brown" :foreground "black")))
-    "Symbol Overlay custom candidate 15"
-    :group 'symbol-overlay)
-  (defface symbol-overlay-face-16
-    '((t (:background "deep sky blue" :foreground "black")))
-    "Symbol Overlay custom candidate 16"
-    :group 'symbol-overlay)
-  :custom (symbol-overlay-faces . '(symbol-overlay-face-1
-                                    symbol-overlay-face-2
-                                    symbol-overlay-face-3
-                                    symbol-overlay-face-4
-                                    symbol-overlay-face-5
-                                    symbol-overlay-face-6
-                                    symbol-overlay-face-7
-                                    symbol-overlay-face-8
-                                    symbol-overlay-face-9
-                                    symbol-overlay-face-10
-                                    symbol-overlay-face-11
-                                    symbol-overlay-face-12
-                                    symbol-overlay-face-13
-                                    symbol-overlay-face-14
-                                    symbol-overlay-face-15
-                                    symbol-overlay-face-16))
-  :bind (("C-c m" . symbol-overlay-put)))
+  :bind ("C-c m" . symbol-overlay-put)
+  :custom-face
+  ;; 顔定義のリストを作成
+  (symbol-overlay-face-9 ((t (:background "chocolate" :foreground "black"))))
+  (symbol-overlay-face-10 ((t (:background "sky blue" :foreground "black"))))
+  (symbol-overlay-face-11 ((t (:background "yellow green" :foreground "black"))))
+  (symbol-overlay-face-12 ((t (:background "magenta" :foreground "black"))))
+  (symbol-overlay-face-13 ((t (:background "aquamarine" :foreground "black"))))
+  (symbol-overlay-face-14 ((t (:background "burly wood" :foreground "black"))))
+  (symbol-overlay-face-15 ((t (:background "sandy brown" :foreground "black"))))
+  (symbol-overlay-face-16 ((t (:background "deep sky blue" :foreground "black"))))
+  :custom
+  (symbol-overlay-faces '(symbol-overlay-face-1
+                          symbol-overlay-face-2
+                          symbol-overlay-face-3
+                          symbol-overlay-face-4
+                          symbol-overlay-face-5
+                          symbol-overlay-face-6
+                          symbol-overlay-face-7
+                          symbol-overlay-face-8
+                          symbol-overlay-face-9
+                          symbol-overlay-face-10
+                          symbol-overlay-face-11
+                          symbol-overlay-face-12
+                          symbol-overlay-face-13
+                          symbol-overlay-face-14
+                          symbol-overlay-face-15
+                          symbol-overlay-face-16)))
 
-;; bm
-(leaf bm
+;; -----------------------------------------------------------------------------
+;; File Management & System
+;; -----------------------------------------------------------------------------
+
+;; recentf
+(use-package recentf
+  :hook (emacs-startup . recentf-mode)
+  :custom
+  (recentf-max-saved-items 10000)
+  (recentf-exclude '(".recentf"))
+  :config
+  (run-with-idle-timer 30 t 'recentf-save-list))
+
+(use-package recentf-ext
+  :ensure t
+  :after recentf)
+
+;; hooks (Whitespace cleanup)
+(use-package emacs
+  :config
+  (defvar delete-trailing-whitespace-before-save t)
+  (defun my-delete-trailing-whitespace ()
+    (if delete-trailing-whitespace-before-save (delete-trailing-whitespace)))
+  :hook (before-save . my-delete-trailing-whitespace))
+
+;; xclip (クリップボード連携)
+(use-package xclip
+  :ensure t
+  :hook (after-init . xclip-mode))
+
+;; tramp
+(use-package tramp
+  :custom
+  (password-cache-expiry nil)
+  (tramp-copy-size-limit nil))
+
+;; undo-tree
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :custom
+  (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  :config
+  (global-undo-tree-mode))
+
+;; bm (Bookmarks)
+(use-package bm
   :ensure t
   :bind ("M-SPC" . bm-toggle))
 
-;; undo-tree
-(leaf undo-tree
-  :ensure t
-  :blackout t
-  :custom
-  (undo-tree-history-directory-alist . '(("." . "~/.emacs.d/undo")))
-  :global-minor-mode global-undo-tree-mode)
+;; -----------------------------------------------------------------------------
+;; Completion & Navigation
+;; -----------------------------------------------------------------------------
 
-;; selected
-(leaf selected
-  :ensure t
-  :blackout t
-  :config
-  (leaf expand-region :ensure t)
-  :custom
-  (selected-global-mode . t)
-  :bind (selected-keymap
-         ("e" . er/expand-region)
-         ("E" . er/contract-region)
-         ("u" . upcase-region)
-         ("d" . downcase-region)
-         ("w" . count-words-region)))
+;; flymake
+(use-package flymake
+  :init
+  (flymake-mode))
 
-(leaf quickrun
+;; orderless
+(use-package orderless
   :ensure t
-  :blackout t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic substring partial-completion flex)))))
+
+;; vertico
+(use-package vertico
+  :ensure t
+  :if (>= emacs-major-version 24) ;; emacs>= 24.5 check
+  :diminish
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-cycle t))
+
+;; consult
+(use-package consult
+  :ensure t
+  :bind (("C-x C-r" . consult-recent-file)
+         ("M-i"     . consult-line)
+         ("M-y"     . consult-yank-pop)
+         ("C-x b"   . consult-buffer)
+         ("C-x i"   . consult-imenu)
+         ("C-x g"   . consult-grep)
+         ("C-x G"   . consult-grep)
+         ("C-c M"   . consult-global-mark)))
+
+;; company
+(use-package company
+  :ensure t
+  :hook (after-init . global-company-mode)
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-selection-wrap-arround t)
+  (company-idle-delay 0.2)
+  (company-transformers '(company-sort-by-occurrence))
+
+  :bind
+  (:map company-active-map
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous)
+        ("C-s" . company-filter-candidates)
+        ("C-i" . company-complete-selection)
+        ("<tab>" . company-complete-selection)
+        ("M-d" . company-show-doc-buffer))
+  (:map company-search-map
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous))
+
+  :custom-face
+  (company-tooltip ((t (:foreground "black" :background "lightgrey"))))
+  (company-tooltip-common ((t (:foreground "black" :background "lightgrey"))))
+  (company-tooltip-common-selection ((t (:foreground "white" :background "steelblue"))))
+  (company-tooltip-selection ((t (:foreground "black" :background "steelblue"))))
+  (company-preview-common ((t (:foreground nil :background "lightgrey" :underline t))))
+  (company-scrollbar-fg ((t (:background "orange"))))
+  (company-scrollbar-bg ((t (:background "gray40")))))
+
+
+;; 補完候補に追加情報を表示 (ファイルサイズ、ドキュメントなど)
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode))
+
+;; 候補に対するアクションメニュー (右クリックメニューのキーボード版)
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)         ; 候補に対するアクション
+   ("C-;" . embark-dwim)        ; 文脈に合わせたデフォルトアクション
+   ("C-h B" . embark-bindings)) ; 現在のキーバインド一覧を表示
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+;; Consult と Embark の連携
+(use-package embark-consult
+  :ensure t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+;; selected (region 選択時のメニュー)
+(use-package selected
+  :ensure t
+  :diminish selected-minor-mode
+  :hook (after-init . selected-global-mode)
+  :bind (:map selected-keymap
+              ("e" . er/expand-region)
+              ("E" . er/contract-region)
+              ("u" . upcase-region)
+              ("d" . downcase-region)
+              ("w" . count-words-region)))
+
+;; expand region
+(use-package expand-region :ensure t)
+
+;; sequential-command
+(use-package sequential-command
+  :ensure t
+  :bind (("C-a" . seq-home)
+         ("C-e" . seq-end))
   :config
-  (quickrun-add-command "c++17"
-                        '((:command . "g++")
-                          (:exec . ("%c -o %e %s -std=c++17"
-                                    "%e"))
-                          (:remove . "%e")
-                          (:description . "Compile C++ file with 'gcc -std=c++11' and execute"))
-                        :default "c++")
+  (require 'sequential-command-config)
+  (sequential-command-setup-keys))
+
+;; smart-jump
+(use-package smart-jump
+  :ensure t
+  :config
+  (smart-jump-setup-default-registers))
+
+;; -----------------------------------------------------------------------------
+;; Programming & Languages
+;; -----------------------------------------------------------------------------
+
+;; quickrun
+(use-package quickrun
+  :ensure t
+  :diminish
+  :bind ("C-\\" . quickrun)
+  :config
   (when (executable-find "iverilog")
     (quickrun-add-command "iverilog"
                           '((:command . "iverilog")
@@ -306,118 +315,94 @@
                           :mode 'verilog-mode))
   (quickrun-add-command "python"
     '((:command . "python3"))
-    :override t)
-  :bind (("C-\\" . quickrun))
-  )
+    :override t))
 
-(leaf company
+;; lsp-mode
+(use-package eglot
   :ensure t
-  :global-minor-mode global-company-mode
-  :custom-face
-  ((company-tooltip . '((t (:foreground "black" :background "lightgrey"))))
-   (company-tooltip-common . '((t (:foreground "black" :background "lightgrey"))))
-   (company-tooltip-common-selection . '((t (:foreground "white" :background "steelblue"))))
-   (company-tooltip-selection . '((t (:foreground "black" :background "steelblue"))))
-   (company-preview-common . '((t (:foreground nil :background "lightgrey" :underline t))))
-   (company-scrollbar-fg . '((t (:background "orange"))))
-   (company-scrollbar-bg . '((t (:background "gray40")))))
-  :bind ((company-active-map ("C-n" . company-select-next)
-                             ("C-p" . company-select-previous)
-                             ("C-s" . company-filter-candidates)
-                             ("C-i" . company-complete-selection)
-                             ("<tab>" . company-complete-selection)
-                             ("M-d" . company-show-doc-buffer))
-         (company-search-map ("C-n" . company-select-next)
-                             ("C-p" . company-select-previous)))
+  :hook
+  ((c-mode c++-mode python-mode go-mode verilog-mode) . eglot-ensure)
   :custom
-  ((company-minimum-prefix-length . 1)
-   (company-selection-wrap-arround . t)
-   (company-idle-delay . 0.4)
-   (company-transformers . '(company-sort-by-occurrence))))
+  (eglot-autoshutdown t)      ; バッファをすべて閉じたらLSPサーバーも終了
+  (eglot-sync-connect 1)      ; 接続タイムアウト(秒)。0なら非同期(推奨しない場合あり)
+)
 
-(leaf flycheck
+(use-package which-key
   :ensure t
-  :global-minor-mode global-flycheck-mode
-  :bind
-  (("M-n" . flycheck-next-error)
-   ("M-p" . flycheck-previous-error)))
+  :hook (after-init . which-key-mode))
 
-(leaf lsp-mode
-  :ensure t
+;; C / C++ Configuration
+(use-package cc-mode
+  :ensure nil
+  :hook
+  (c-mode-common . (lambda ()
+                     (c-set-offset 'innamespace 0)
+                     (c-set-offset 'inextern-lang 0)))
+  :custom
+  (c++-basic-offset 2)
+  (c-basic-offset 2))
+
+;; Verilog Configuration
+(use-package verilog-mode
+  :ensure nil
+  :custom
+  (verilog-case-indent 4)
+  (verilog-cexp-indent 4)
+  (verilog-indent-level 4)
+  (verilog-indent-level-behavioral 4)
+  (verilog-indent-level-declaration 4)
+  (verilog-indent-level-module 4))
+
+;; Markdown Configuration
+(use-package markdown-mode
+  :hook
+  (markdown-mode . (lambda ()
+                     (set (make-local-variable 'delete-trailing-whitespace-before-save) nil))))
+
+;; Other languages
+(use-package cmake-mode :ensure t)
+(use-package meson-mode :ensure t)
+(use-package markdown-mode :ensure t)
+
+;; modern highlighting with tree-sitter
+(use-package treesit
+  :if (and (fboundp 'treesit-available-p) (treesit-available-p))
+  :custom
+  (treesit-language-source-alist
+   '((c "https://github.com/tree-sitter/tree-sitter-c")
+     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (verilog "https://github.com/tree-sitter/tree-sitter-verilog")
+     (bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/tree-sitter/tree-sitter-cmake")
+     (dockerfile "https://github.com/tree-sitter/tree-sitter-dockerfile")
+     (elisp "https://github.com/tree-sitter/tree-sitter-elisp")
+     (editorconfig "https://github.com/tree-sitter/tree-sitter-editorconfig")
+     (fortran "https://github.com/tree-sitter/tree-sitter-fortran")
+     (gitignore "https://github.com/tree-sitter/tree-sitter-gitignore")
+     (gitattributes "https://github.com/tree-sitter/tree-sitter-gitattributes")
+     (llvm "https://github.com/tree-sitter/tree-sitter-llvm")
+     (llvm-mir "https://github.com/tree-sitter/tree-sitter-llvm-mir")
+     (markdown "https://github.com/tree-sitter/tree-sitter-markdown")
+     (markdown-inline "https://github.com/tree-sitter/tree-sitter-markdown-inline")
+     (mermaid "https://github.com/tree-sitter/tree-sitter-mermaid")
+     (meson "https://github.com/tree-sitter/tree-sitter-meson")
+     (tcl "https://github.com/tree-sitter/tree-sitter-tcl")
+     (yaml "https://github.com/tree-sitter/tree-sitter-yaml")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     ))
   :config
-  (leaf which-key
-    :ensure t
-    :global-minor-mode which-key-mode)
-  (leaf lsp-ui
-    :ensure t)
-  :custom
-  ((lsp-print-io . nil)
-   (lsp-log-io . nil)
-   (gc-cons-threshold . 100000000)
-   (read-process-output-max . 1048576)
-   (lsp-keymap-prefix . "C-c l")
-   (lsp-enable-on-type-formatting . nil))
-  :global-minor-mode lsp-mode
-  :hook
-  (lsp-mode . lsp-enable-which-key-integration))
+  ;; 既存のメジャーモード (c++-modeなど) を tree-sitter 版 (c++-ts-mode) にマッピング
+  (let ((map treesit-language-source-alist))
+    ;; 必要に応じてマッピングを追加・調整
+    (setq major-mode-remap-alist
+          (mapcar (lambda (x) (cons (car x) (cdr x))) map))))
 
-(leaf c-config
-  :init
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (c-set-offset 'innamespace 0)
-              (c-set-offset 'inextern-lang 0)))
-  :custom
-  ((c++-basic-offset . 2)
-   (c-basic-offset . 2))
-  :hook
-  ((lsp-deferred . c-mode)
-   (lsp-deferred . c++-mode)
-   (google-set-c-style . c++-mode)))
-
-(leaf python-config
-  :hook (lsp-deferred . python-mode))
-
-(leaf verilog-config
-  :custom
-  ((verilog-case-indent . 4)
-   (verilog-cexp-indent . 4)
-   (verilog-indent-level . 4)
-   (verilog-indent-level-behavioral . 4)
-   (verilog-indent-level-declaration . 4)
-   (verilog-indent-level-module . 4))
-  :hook (lsp-deferred . verilog-mode))
-
-(leaf golang-config
-  :init
-  (leaf go-mode
-    :ensure t
-    :mode "\\.go\\'")
-  :hook (lsp-deferred . go-mode))
-
-(leaf markdown-config
-  :hook
-  (markdown-mode-hook . (lambda ()
-                          (set (make-local-variable 'delete-trailing-whitespace-before-save) nil))))
-
-(leaf yasnippet
+;; yasnippet
+(use-package yasnippet
   :ensure t
-  :global-minor-mode yas-global-mode
-  :custom (yas-snippet-dirs . '("~/.emacs.d/snippets")))
-
-(leaf smart-jump
-  :ensure t
-  :init
-  (smart-jump-setup-default-registers))
-
-(leaf aidermacs
-  :ensure t
-  :bind
-  (("C-c C-a" . aidermacs-transient-menu))
-  :config
-  (setenv "OLLAMA_API_BASE" "http://127.0.0.1/11434")
+  :hook (after-init . yas-global-mode)
   :custom
-  (aidermacs-default-model . "ollama/llama3.2")
-  )
+  (yas-snippet-dirs '("~/.emacs.d/snippets")))
 
 (provide 'init)
